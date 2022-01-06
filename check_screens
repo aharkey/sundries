@@ -1,0 +1,18 @@
+#!/bin/bash
+
+ps waux | grep SCREEN | grep -v grep | grep -v usr | awk '{print $2}' > ~/pidlist
+
+cat ~/pidlist | while read line
+do
+    echo '----'
+    echo $line
+    echo '----'
+    if (ps u -p $(ps -el | grep $(ps -el | grep $line | grep bash | awk '{print $4}') | grep -v bash | awk '{print $4}') 2>/dev/null) ; then
+        echo ''
+    else
+        echo 'All processes are finished.'
+        echo ''
+    fi
+done
+
+rm ~/pidlist
