@@ -1,13 +1,30 @@
 #!/bin/bash
 
-ps waux | grep SCREEN | grep -v grep | grep -v usr | awk '{print $2}' > ~/pidlist
+USER1='none'
+
+while getopts ":u:" option; do
+	case $option in
+        u) USER1=${OPTARG};;
+        esac
+	done
+
+if [[ $USER1 = 'none' ]]; then
+    ps waux | grep SCREEN | grep -v grep | grep -v usr | awk '{print $2, $1}' > ~/pidlist
+fi
+
+if [[ $USER1 != 'none' ]]; then
+     ps waux | grep SCREEN | grep -v grep | grep -v usr | grep ${USER1} | awk '{print $2, $1}' > ~/pidlist
+fi
 
 cat ~/pidlist | while read line
 do
     echo '----'
     echo $line
     echo '----'
-    if (ps u -p $(ps -el | grep $(ps -el | grep $line | grep bash | awk '{print $4}') | grep -v bash | awk '{print $4}') 2>/dev/null) ; then
+
+    NAME=`echo $line | cut -d ' ' -f 1`
+
+    if (ps u -p $(ps -el | grep $(ps -el | grep $NAME | grep bash | awk '{print $4}') | grep -v bash | awk '{print $4}') 2>/dev/null) ; then
         echo ''
     else
         echo 'All processes are finished.'
