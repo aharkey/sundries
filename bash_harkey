@@ -1,0 +1,7 @@
+#!/bin/bash
+
+alias multiqc="docker run -tv `pwd`:`pwd` -w `pwd` ewels/multiqc"
+
+alias cdisk='df -h ./'
+alias cfold='du -hd1 | sort -k2'
+alias gostore='sftp peaselab@10.122.250.129'
